@@ -392,7 +392,7 @@ Webhook/polling, health, метрики, бэкапы, секреты.
 ## 11. Контакты
 
 - Telegram: [@ninelegsdog](https://t.me/ninelegsdog)
-- Канал с разбором проектов: [@ninelegsdog](https://t.me/ninelegsdog)
+- Канал с разбором проектов: [@BotogradPress](https://t.me/BotogradPress)
 - Код: [github.com/ninelegsdog](https://github.com/ninelegsdog)
 - Боты: @SaasBookingKitBot · @LeadgenKitBot · @StoreKitBot · @SaasSupportKitBot ·
   @MembershipKitBot · @ReminderKitBot · @DocuflowKitBot · @PricesentryKitBot · @DeliveryKitBot
