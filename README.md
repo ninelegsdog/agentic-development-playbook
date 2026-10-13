@@ -1,5 +1,58 @@
 # Agentic Development Playbook
 
+
+[![License](https://img.shields.io/github/license/ninelegsdog/agentic-development-playbook.svg)](LICENSE)
+
+## Contents
+
+- [Почему этот документ существует](#почему-этот-документ-существует)
+- [1. Что лежит в портфолио (доказательная база)](#1-что-лежит-в-портфолио-доказательная-база)
+- [2. Архитектура harness](#2-архитектура-harness)
+- [3. Принципы работы с контекстом](#3-принципы-работы-с-контекстом)
+- [4. Шаблон `AGENTS.md`](#4-шаблон-agentsmd)
+- [Роли](#роли)
+- [Стек](#стек)
+- [Обязательные правила](#обязательные-правила)
+- [Контракты, которые нельзя вывести из кода](#контракты-которые-нельзя-вывести-из-кода)
+- [Гейты перед коммитом](#гейты-перед-коммитом)
+- [Где канон](#где-канон)
+- [5. Пример спецификации задачи](#5-пример-спецификации-задачи)
+- [1. Позиционирование](#1-позиционирование)
+- [2. Метрики успеха](#2-метрики-успеха)
+- [3. Scope](#3-scope)
+- [4. Сценарии](#4-сценарии)
+- [5. UX-контракт](#5-ux-контракт)
+- [6. Данные](#6-данные)
+- [7. Платежи](#7-платежи)
+- [8. Админка](#8-админка)
+- [9. Инфраструктура](#9-инфраструктура)
+- [10. Тесты и приёмка](#10-тесты-и-приёмка)
+- [11. Риски](#11-риски)
+- [6. Чек-лист ревью AI-кода](#6-чек-лист-ревью-ai-кода)
+- [7. Чек-лист безопасности секретов](#7-чек-лист-безопасности-секретов)
+- [8. Цикл тестирования и исправления](#8-цикл-тестирования-и-исправления)
+- [9. Передача контекста между агентами](#9-передача-контекста-между-агентами)
+- [Handoff](#handoff)
+- [10. Что я не утверждаю](#10-что-я-не-утверждаю)
+- [11. Контакты](#11-контакты)
+- [Лицензия](#лицензия)
+
+> **The body of this document is in Russian.** It is a methodology write-up — the agent
+> harness, context rules, the review checklists and the working rules — authored in
+> Russian and kept that way rather than machine-translated into English that would
+> misrepresent it. What follows this note is the author's own text, unaltered.
+
+## What this is
+
+How I deliver software with AI coding agents: the harness they run inside, the
+context engineering that keeps a long task coherent, the review checklists for
+AI-written code and secrets, and the rules an agent follows when it touches this
+portfolio.
+
+The claim it argues is specific and falsifiable: the quality of agent-produced
+code is a property of the harness and the acceptance criteria, not of the model.
+A documented case study follows — nine Telegram bots, each with its own
+repository, CI and production deployment.
 > How I deliver software with AI coding agents: the harness, the context rules, the review
 > checklists and the verification discipline behind a portfolio of 9 Telegram bots running in production.
 >
