@@ -2,6 +2,7 @@
 
 
 [![License](https://img.shields.io/github/license/ninelegsdog/agentic-development-playbook.svg)](LICENSE)
+[![CI](https://github.com/ninelegsdog/agentic-development-playbook/actions/workflows/ci.yml/badge.svg)](https://github.com/ninelegsdog/agentic-development-playbook/actions/workflows/ci.yml)
 
 ## Contents
 
