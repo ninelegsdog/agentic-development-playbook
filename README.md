@@ -64,6 +64,19 @@ repository, CI and production deployment.
 
 ---
 
+## TL;DR (EN)
+
+How I ship software with AI coding agents: **harness design, context engineering, strict quality gates, and verification discipline**.
+
+- **Scale:** 9 production Telegram bots, ~1038 tests (bots) + 59 in shared library, full observability stack
+- **Key insight:** Agent output quality depends on the **harness + acceptance criteria + gates**, not the model choice
+- **Approach:** Specification → Context/AGENTS.md → Decomposition → Agent generation → Human review → Gates (lint/type/test/gitleaks) → Deploy/Verify
+- **Focus:** Making agent work reproducible, reviewable, and verifiable before production
+
+> The full methodology (in Russian) follows below.
+
+
+
 ## Почему этот документ существует
 
 Код в проектах этого портфолио написан AI coding-агентами. Это не повод прятать это —
