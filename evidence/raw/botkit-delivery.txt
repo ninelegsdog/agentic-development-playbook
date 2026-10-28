@@ -1,0 +1,30 @@
+# botkit-delivery @ 291e29e
+# command: uv sync --frozen --all-extras && uv run pytest -q
+# exit code: 0
+# captured: 2026-10-28, tail of `pytest -q` output
+
+Name                          Stmts   Miss Branch BrPart  Cover   Missing
+-------------------------------------------------------------------------
+src/admin/handlers.py           176    114     52      3    29%   42-47, 52-53, 57-60, 64-66, 70-72, 76-86, 90-117, 121-134, 140-143, 147-163, 167-195, 199-216, 220-230, 241-246
+src/core/config.py               36      6     10      0    74%   47-52
+src/core/errors.py               48      7      8      0    84%   33, 54-59
+src/core/logging.py              25      0      8      1    97%   45->47
+src/core/metrics.py              63     14      2      0    75%   18-19, 73-76, 80, 84, 96-101
+src/core/migrations.py           20      0     10      1    97%   84->exit
+src/core/throttling.py           31      2      6      3    86%   25->46, 31->41, 35->41, 44-45
+src/delivery/handlers.py         57     30     10      0    40%   30-31, 35-56, 68-76, 80-88
+src/delivery/service.py          77      4      2      1    94%   96-104, 125
+src/delivery/webhook_api.py      48      4     12      4    87%   48, 53, 60, 70
+-------------------------------------------------------------------------
+TOTAL                           783    181    128     13    72%
+
+18 files skipped due to complete coverage.
+Required test coverage of 70% reached. Total coverage: 71.68%
+=========================== short test summary info ============================
+SKIPPED [1] tests/e2e/test_dialog.py: set RUN_TELEGRAM_E2E=1 to run real Telegram tests
+SKIPPED [1] tests/test_integration_container.py:15: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_container.py:27: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_containers.py:7: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_containers.py:18: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_containers.py:28: set --run-integration to run integration tests
+141 passed, 6 skipped, 10 warnings in 13.46s

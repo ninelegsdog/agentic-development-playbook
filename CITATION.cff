@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+title: "Agentic Development Playbook"
+message: "If you use this methodology or its templates, cite it as below."
+type: software
+authors:
+  - name: "Ninelegsdog"
+    website: "https://github.com/ninelegsdog"
+repository-code: "https://github.com/ninelegsdog/agentic-development-playbook"
+url: "https://github.com/ninelegsdog/agentic-development-playbook"
+license: MIT
+version: 1.0.0
+date-released: 2026-10-28
+keywords:
+  - ai-agents
+  - software-engineering
+  - context-engineering
+  - code-review
+  - telegram-bots
+abstract: >-
+  A methodology for delivering production software with AI coding agents: the
+  harness they run inside, the context rules that keep a long task coherent, the
+  review checklists for AI-written code and secrets, and the evidence discipline
+  behind the claims.

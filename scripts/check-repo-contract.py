@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 import unicodedata
 from pathlib import Path
@@ -31,6 +32,60 @@ def slugify(heading: str) -> str:
     h = re.sub(r"[`*_]", "", heading).strip().lower()
     h = re.sub(r"[^\w\s-]", "", h, flags=re.UNICODE)
     return re.sub(r"\s+", "-", h)
+
+
+def strip_fences(text: str) -> str:
+    """Remove fenced code blocks, preserving line structure.
+
+    GitHub does not render a heading that sits inside a fence, so a Contents
+    link to one is dead. Extracting headings from the raw text made every
+    fenced ``## Something`` a valid anchor -- the checker then certified a
+    table of contents that 404s for the reader. This is the bug that let 18 of
+    31 anchors in this repository's own README ship broken.
+    """
+    out: list[str] = []
+    fence_char: str | None = None
+    fence_len = 0
+    for line in text.splitlines():
+        if fence_char is None:
+            m = re.match(r"^\s{0,3}(`{3,}|~{3,})", line)
+            if m:
+                fence_char, fence_len = m.group(1)[0], len(m.group(1))
+                out.append("")
+            else:
+                out.append(line)
+        else:
+            # A closing fence carries no info string: ```python inside a block
+            # is content, not the end of it.
+            m = re.match(r"^\s{0,3}(`{3,}|~{3,})\s*$", line)
+            if m and m.group(1)[0] == fence_char and len(m.group(1)) >= fence_len:
+                fence_char, fence_len = None, 0
+            out.append("")
+    return "\n".join(out)
+
+
+def repo_candidates(root: Path) -> list[str]:
+    """Names this checkout could be, most authoritative first.
+
+    The directory name is the last resort, not the first: a clone made as
+    ``git clone ... playbook`` used to fail with "repository 'playbook' has no
+    type in the contract" even though the remote said exactly which repository
+    it was. CI hides this because Actions checks out under the repo name.
+    """
+    names: list[str] = []
+    proc = subprocess.run(
+        ["git", "-C", str(root), "config", "--get", "remote.origin.url"],
+        capture_output=True, text=True, check=False,
+    )
+    url = proc.stdout.strip()
+    if url:
+        tail = url.rstrip("/").split("/")[-1].split(":")[-1]
+        name = re.sub(r"\.git$", "", tail)
+        if name:
+            names.append(name)
+    if root.name not in names:
+        names.append(root.name)
+    return names
 
 
 # Named rather than inline: a bare 0.20 in a comparison reads as a typo waiting
@@ -74,10 +129,26 @@ def load_contract(contract_path: Path) -> dict:
 def repo_type(contract: dict, repo: str) -> str | None:
     t = contract.get("repos", {}).get(repo)
     if t is None:
-        raise SystemExit(f"repository {repo!r} has no type in the contract")
+        print(f"repository {repo!r} has no type in the contract", file=sys.stderr)
+        return None
     if t not in contract.get("types", {}):
-        raise SystemExit(f"repository {repo!r} has unknown type {t!r}")
+        print(f"repository {repo!r} has unknown type {t!r}", file=sys.stderr)
+        return None
     return t
+
+
+def identify_repo(root: Path, contract: dict) -> str | None:
+    """Resolve which contract entry this checkout is, without trusting the folder name."""
+    candidates = repo_candidates(root)
+    for name in candidates:
+        if name in contract.get("repos", {}):
+            return name
+    print(
+        "cannot identify repository: tried " + ", ".join(repr(c) for c in candidates)
+        + "; none is listed under 'repos' in the contract",
+        file=sys.stderr,
+    )
+    return None
 
 
 def check_required(root: Path, spec: dict, rep: Report) -> None:
@@ -137,12 +208,14 @@ def check_language(text: str, rep: Report, policy: dict | None) -> None:
         rep.ok()
 
 def check_contents(text: str, rep: Report) -> None:
-    headings = re.findall(r"^#{1,6}\s+(.+?)\s*$", text, re.MULTILINE)
+    # Fenced code is not rendered prose: a heading inside it has no anchor.
+    visible = strip_fences(text)
+    headings = re.findall(r"^#{1,6}\s+(.+?)\s*$", visible, re.MULTILINE)
     anchors = {slugify(h) for h in headings}
 
     # Contents links must point at headings that exist.
     in_toc = False
-    for line in text.splitlines():
+    for line in visible.splitlines():
         if re.match(r"^#{1,6}\s+Contents\s*$", line):
             in_toc = True
             continue
@@ -155,7 +228,7 @@ def check_contents(text: str, rep: Report) -> None:
                 else:
                     rep.ok()
 
-    if not re.search(r"^#{1,6}\s+Contents\s*$", text, re.MULTILINE):
+    if not re.search(r"^#{1,6}\s+Contents\s*$", visible, re.MULTILINE):
         rep.fail("toc", "README.md has no Contents section")
     else:
         rep.ok()
@@ -195,8 +268,9 @@ def check_placeholders(text: str, rep: Report) -> None:
 def check_links(root: Path, rep: Report) -> None:
     """Every relative link in the documentation must resolve."""
     docs = [root / "README.md"]
-    if (root / "docs").is_dir():
-        docs += sorted((root / "docs").rglob("*.md"))
+    for sub in ("docs", "evidence"):
+        if (root / sub).is_dir():
+            docs += sorted((root / sub).rglob("*.md"))
     for doc in docs:
         if not doc.is_file():
             continue
@@ -259,12 +333,16 @@ def main() -> int:
         return EXIT_CANNOT_VERIFY
     root = Path(sys.argv[1]).resolve()
     contract = load_contract(Path(sys.argv[2]))
-    repo = root.name
     if not root.is_dir():
         print(f"repository root not found: {root}", file=sys.stderr)
         return EXIT_CANNOT_VERIFY
 
+    repo = identify_repo(root, contract)
+    if repo is None:
+        return EXIT_CANNOT_VERIFY
     t = repo_type(contract, repo)
+    if t is None:
+        return EXIT_CANNOT_VERIFY
     spec = contract["types"][t]
     rep = Report()
 

@@ -1,70 +1,63 @@
-name: Bug report
-description: Something behaves differently from what it says it does
+name: Problem with a claim
+description: A number, link or statement in the document does not reproduce
 labels: [bug]
 body:
   - type: markdown
     attributes:
       value: |
-        This project runs in production. A useful report names what you ran, what
-        you expected and what happened — not just the symptom.
+        This repository publishes claims about code and infrastructure. If a claim
+        does not reproduce, that is a bug in the document — not a difference of
+        opinion. The most useful report contains the command you ran and its output.
 
   - type: input
     id: version
     attributes:
       label: Version or commit
-      description: Tag, or the commit SHA you ran.
-      placeholder: v1.0.0 or 56b5541
+      description: The tag or commit SHA of the document you read.
+      placeholder: v1.0.0 or 61f4421
+    validations:
+      required: true
+
+  - type: input
+    id: section
+    attributes:
+      label: Section
+      description: The heading or anchor where the claim appears.
+      placeholder: "1. Что лежит в портфолио"
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim
+    attributes:
+      label: What does the document say?
+      description: Quote the sentence or number exactly.
+    validations:
+      required: true
+
+  - type: textarea
+    id: measured
+    attributes:
+      label: What did you measure instead?
+      description: |
+        Include the command and its output. If the problem is a broken link or a
+        dead anchor, paste the URL and what you got.
     validations:
       required: true
 
   - type: dropdown
-    id: surface
+    id: kind
     attributes:
-      label: Where does it happen?
+      label: Kind of problem
       options:
-        - Bot handlers
-        - Webhook endpoint
-        - Admin panel
-        - Storage or migrations
-        - Deployment or CI
+        - Number does not reproduce
+        - Dead link or anchor
+        - Statement is outdated
+        - Statement is not supported by the linked repository
+        - Governance or policy document is wrong for this repository
         - Something else
     validations:
       required: true
-
-  - type: textarea
-    id: expected
-    attributes:
-      label: What did you expect to happen?
-    validations:
-      required: true
-
-  - type: textarea
-    id: actual
-    attributes:
-      label: What happened instead?
-      description: Include the exact log lines or the response body.
-    validations:
-      required: true
-
-  - type: textarea
-    id: repro
-    attributes:
-      label: Steps to reproduce
-      description: |
-        1.
-        2.
-        3.
-      render: text
-    validations:
-      required: true
-
-  - type: textarea
-    id: logs
-    attributes:
-      label: Logs, trace or report
-      description: |
-        Scrub tokens, session strings and customer identifiers before pasting.
-        See SECURITY.md if you think you have found something exploitable.
 
   - type: checkboxes
     id: checks
@@ -73,5 +66,5 @@ body:
       options:
         - label: I searched the existing issues for this.
           required: true
-        - label: I removed secrets and customer data from everything above.
+        - label: I removed secrets, customer data and internal hostnames from everything above.
           required: true

@@ -1,0 +1,30 @@
+# botkit-support @ cc60d09
+# command: uv sync --frozen --all-extras && uv run pytest -q
+# exit code: 0
+# captured: 2026-10-28, tail of `pytest -q` output
+
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.13.14-final-0 _______________
+
+Name                      Stmts   Miss Branch BrPart  Cover   Missing
+---------------------------------------------------------------------
+src/admin/handlers.py        60     24     14      0    51%   36-49, 53-62, 81-83, 91-93
+src/core/config.py           41      2     10      0    96%   33-34
+src/core/errors.py           48      2      8      1    95%   33, 57
+src/core/logging.py          25      0      8      1    97%   45->47
+src/core/metrics.py          60     13      2      0    76%   17-18, 69-72, 76, 80, 92-96
+src/core/ui.py               23      4      6      2    72%   12-14, 23->25, 26
+src/core/webhook.py          22      2      0      0    91%   15-16
+src/sla/scheduler.py         25      8      4      1    69%   23-24, 26-34
+src/support/handlers.py     209    144     44      1    26%   32, 51-57, 61-76, 86-121, 125-128, 136-146, 150-165, 169-181, 185-197, 201-221, 225-240, 244-268, 272-273, 277-284, 288-307, 311, 315-329, 333-334
+src/support/service.py       87      1      6      1    98%   219
+---------------------------------------------------------------------
+TOTAL                       832    200    118      7    72%
+
+19 files skipped due to complete coverage.
+Required test coverage of 70% reached. Total coverage: 72.11%
+=========================== short test summary info ============================
+SKIPPED [1] tests/e2e/test_dialog.py: set RUN_TELEGRAM_E2E=1 to run real Telegram tests
+SKIPPED [1] tests/test_integration_container.py:15: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_container.py:27: set --run-integration to run integration tests
+194 passed, 3 skipped, 5 warnings in 11.87s
