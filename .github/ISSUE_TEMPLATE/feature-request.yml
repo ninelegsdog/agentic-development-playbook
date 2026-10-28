@@ -1,36 +1,36 @@
-name: Feature request
-description: Suggest a change, and say how "done" would be verified
+name: Suggestion for the document
+description: Propose a section, a template or a structural change
 labels: [enhancement]
 body:
   - type: markdown
     attributes:
       value: |
-        The most useful part of a feature request is not the idea — it is how you
-        would tell that it works. A change that cannot be observed failing is not
-        finished.
+        The most useful part of a suggestion is how a reader would tell that it
+        works. A section that cannot be checked against a real repository is a
+        section that will drift.
 
   - type: textarea
     id: problem
     attributes:
-      label: What problem does this solve?
-      description: Describe the situation, not the implementation.
+      label: What problem does this solve for the reader?
+      description: Describe the situation, not the wording.
     validations:
       required: true
 
   - type: textarea
     id: proposal
     attributes:
-      label: What would you like to happen?
+      label: What would you add or change?
     validations:
       required: true
 
   - type: textarea
     id: verification
     attributes:
-      label: How would we know it works?
+      label: How would we know it is correct?
       description: |
-        What would you run, and what would you see that proves it? If the answer
-        is only "the new feature exists", the feature is not observable yet.
+        Which repository, command or artefact would prove the new section is
+        true? If the answer is only "it reads well", it is not verifiable yet.
     validations:
       required: true
 
@@ -39,12 +39,11 @@ body:
     attributes:
       label: Where does it belong?
       options:
-        - Bot handlers
-        - Webhook endpoint
-        - Admin panel
-        - Storage or migrations
-        - Deployment or CI
-        - Documentation only
+        - Existing section
+        - New section
+        - Template (AGENTS.md, spec, handoff, checklist)
+        - Governance or CI
+        - Translation or front page
     validations:
       required: true
 

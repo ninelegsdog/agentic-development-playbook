@@ -35,10 +35,15 @@
 
 ## Гейты перед коммитом
 
+- `python3 scripts/check-repo-contract.py . scripts/repo-contract.json` — exit 0
+- `python3 scripts/check-repo-contract_test.py` — exit 0; гейт, который не умеет
+  падать, не гейт
+- `python3 scripts/check-evidence.py` и `--self-test` — числа в README сходятся
+  с `evidence/metrics.json`
 - Ссылки в README открываются и ведут туда, куда заявлено
 - Нет внутренних имён хостов, IP-адресов и служебных путей в тексте,
   предназначенном для публичного чтения
-- Числа в тексте сверены с измерением; устаревшие помечены датой
+- Числа в тексте сверены с `evidence/metrics.json`; устаревшие помечены датой
 - `git grep -nE '[0-9]{8,10}:[A-Za-z0-9_-]{35}'` — ни одного совпадения
 
 ## Где канон

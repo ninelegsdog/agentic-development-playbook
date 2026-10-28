@@ -4,49 +4,63 @@
 
 **Do not open a public issue.**
 
-Email the maintainer directly, or use GitHub's private vulnerability reporting at
-<https://github.com/ninelegsdog/agentic-development-playbook/security/advisories/new>. Include:
+Use GitHub's private vulnerability reporting at
+<https://github.com/ninelegsdog/agentic-development-playbook/security/advisories/new>.
+Include what the issue is, what an attacker gains, and the commit or version it
+affects.
 
-- what the issue is and what an attacker gains;
-- steps to reproduce;
-- the affected version or commit.
-
-You should get an acknowledgement within a few days. Fixes for confirmed issues
-ship in a patch release, and the reporter is credited unless they prefer otherwise.
+You should get an acknowledgement within a few days. Confirmed issues are fixed
+on `main` and cut in a patch release; the reporter is credited unless they prefer
+otherwise.
 
 ## Scope
 
+This repository publishes a document and the small Python checks that guard it.
+The security surface is therefore small and specific.
+
 In scope:
 
-- the webhook endpoint and the authentication that guards it;
-- the admin panel and its authorisation;
-- secrets handling and the CI workflow's permissions;
-- dependency compromise affecting this project.
+- **The contract checker** (`scripts/check-repo-contract.py`) — it reads
+  repository files and is executed by CI. A path traversal, a crash on hostile
+  input, or a check that silently passes is a security-relevant defect, because
+  a green gate that did not run is worse than a red one.
+- **The CI workflows** — permissions, action pinning, and anything that could
+  let a pull request execute code with a write-scoped token.
+- **Secrets and personal data in the repository** — a token in the history, a
+  real customer identifier, a public IP or an internal hostname in an example.
+- **Supply chain** — a compromised action or dependency used by CI.
 
 Out of scope:
 
-- vulnerabilities in aiogram, SQLAlchemy or Redis — report those upstream;
-- findings that require an attacker who already has write access to the repository;
-- the production host's network perimeter, which is not controlled here.
+- The nine Telegram bots, `botkit-core`, `botkit-monitoring`, `botkit-farm` and
+  the templates. Each has its own repository and its own policy; report there.
+- Findings that require an attacker who already has write access to this
+  repository.
+- GitHub itself, and vulnerabilities in the actions used here — report those
+  upstream, though a note here is welcome if the pin needs to move.
 
 ## Design commitments
 
-These are properties this project holds itself to. A change that breaks one is a
-security change and needs review.
+These are properties this repository holds itself to. A change that breaks one
+is a security change and needs review.
 
-1. **Webhook traffic is authenticated.** Every inbound event is checked against the
-   configured secret header before it is parsed. An unauthenticated event never
-   reaches the state machine.
-2. **Admin actions are gated by id and password.** The admin panel is not reachable
-   by being a member of a chat.
-3. **Secrets never enter git.** `.env` is ignored, `.env.example` carries no real
-   values, and CI runs gitleaks over the full history rather than only the tip.
-4. **The container does not run as root.** It drops all capabilities and runs
-   `read_only` with a tmpfs for the paths that genuinely need to be written.
-5. **The dependency set is pinned.** `uv.lock` is enforced current by CI, so a
-   resolved dependency set cannot drift while the build stays green.
+1. **No secret ever enters git.** There is no `.env` here and no runtime secret.
+   CI scans the full history, not just the tip, because a secret removed in a
+   later commit is still in the history.
+2. **CI actions are pinned by commit SHA**, not by a mutable tag. A tag can be
+   moved under a repository that has already trusted it.
+3. **CI tokens are read-only.** The workflow declares `permissions: contents:
+   read` and does not use `pull_request_target`, so a pull request from a fork
+   cannot execute with a write token.
+4. **Examples use reserved data.** Documentation examples use addresses from
+   the reserved ranges (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`) and
+   phone numbers from the reserved block (`+7 (999) 000-00-00`). A real hostname
+   or IP in an example is a defect, even if it looks harmless.
+5. **A gate that cannot fail is not a gate.** Every rule in the checker has a
+   negative test, and CI runs those tests alongside the checker.
 
 ## Supported versions
 
-This project is versioned together with the nine production Telegram bots on Python family. Security fixes land on
-`main` and are cut from there. No long-term-support branch exists yet.
+The document is versioned by git tag; the current release is listed in
+[CHANGELOG.md](CHANGELOG.md). Security fixes land on `main` and are cut from
+there as a patch release. There is no long-term-support branch.
