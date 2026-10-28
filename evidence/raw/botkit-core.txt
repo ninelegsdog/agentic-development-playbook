@@ -1,0 +1,35 @@
+# botkit-core @ 5e86459
+# command: uv sync --all-extras && uv run pytest -q
+# exit code: 0
+# captured: 2026-10-28, tail of `pytest -q` output
+
+  /tmp/opencode/research/botkit-core/tests/conftest.py:10: DeprecationWarning: testcontainers.redis is deprecated, use testcontainers.community.redis instead
+    from testcontainers.redis import RedisContainer
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.13.14-final-0 _______________
+
+Name                                 Stmts   Miss Branch BrPart  Cover   Missing
+--------------------------------------------------------------------------------
+botkit_core/__init__.py                  3      0      0      0   100%
+botkit_core/admin.py                    33      0      2      0   100%
+botkit_core/callbacks.py                15      0      8      0   100%
+botkit_core/errors.py                   53     14      8      1    72%   28-31, 41-43, 48, 69-74
+botkit_core/logging.py                  54      9     12      3    82%   22-30, 63->65, 71, 87->89
+botkit_core/metrics.py                  50      9      2      0    83%   25-26, 91, 112-117
+botkit_core/middleware/__init__.py       2      0      0      0   100%
+botkit_core/middleware/logging.py       53      5     14      2    84%   107->118, 127-138
+botkit_core/payments.py                 70     13     18      1    77%   54, 102, 108-109, 112, 173-182
+botkit_core/sentry.py                   12      2      2      0    86%   15-16
+botkit_core/tracing.py                  49      2      2      0    96%   73-74
+botkit_core/webhook.py                  10      0      0      0   100%
+--------------------------------------------------------------------------------
+TOTAL                                  404     54     68      7    85%
+Required test coverage of 70% reached. Total coverage: 84.53%
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_integration_containers.py:7: need --run-integration option to run
+SKIPPED [1] tests/test_integration_containers.py:18: need --run-integration option to run
+SKIPPED [1] tests/test_integration_containers.py:28: need --run-integration option to run
+SKIPPED [1] tests/test_integration_containers.py:39: need --run-integration option to run
+94 passed, 4 skipped, 2 warnings in 6.64s

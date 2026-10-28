@@ -1,0 +1,30 @@
+# botkit-reminder @ 00511d5
+# command: uv sync --frozen --all-extras && uv run pytest -q
+# exit code: 0
+# captured: 2026-10-28, tail of `pytest -q` output
+
+src/core/errors.py                         53     20     10      1    60%   19->exit, 43, 48-49, 57-73
+src/core/logging.py                        20      0      8      1    96%   47->49
+src/core/metrics.py                        73     19      2      0    72%   62-63, 74, 77-78, 81-82, 85-86, 94-95, 99-102, 106, 110, 134-135
+src/core/navigation.py                     20      0      6      0   100%
+src/core/payments.py                        3      0      0      0   100%
+src/core/sentry.py                         18      0      6      1    96%   33->36
+src/core/throttling.py                     25      0      4      0   100%
+src/core/tracing.py                         3      0      0      0   100%
+src/core/ui.py                             14      4      4      0    67%   19-23
+src/core/uow/__init__.py                   29     10      8      3    59%   18, 23-24, 29-34, 37, 40
+src/core/webhook.py                        82     22     14      2    69%   20-21, 42, 46-65, 73, 84-85, 100-101, 114, 125-128
+src/reminder/__init__.py                    7      0      0      0   100%
+src/reminder/handlers.py                  224      8     52     12    93%   97->99, 109->exit, 116->118, 136, 149, 219, 222-223, 224->exit, 230, 233-234, 238->240, 244->246
+src/reminder/models.py                     74      0      0      0   100%
+src/reminder/repositories/__init__.py      75      0      2      1    99%   89->91
+src/reminder/scheduler.py                 107     21     24      6    79%   50-61, 64-65, 81, 83, 99->101, 113, 121->123, 127-129, 132-137, 139-142
+src/reminder/service.py                   165      1     20      0    99%   76
+-----------------------------------------------------------------------------------
+TOTAL                                    1271    170    196     33    84%
+Required test coverage of 80% reached. Total coverage: 84.39%
+=========================== short test summary info ============================
+SKIPPED [1] tests/e2e/test_dialog.py: set RUN_TELEGRAM_E2E=1 to run real Telegram tests
+SKIPPED [1] tests/test_integration.py:24: need --run-integration option to run
+SKIPPED [1] tests/test_integration.py:71: need --run-integration option to run
+167 passed, 3 skipped, 3 warnings in 12.61s

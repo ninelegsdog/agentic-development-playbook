@@ -86,6 +86,37 @@ def run(root: Path) -> tuple[int, str]:
     return p.returncode, p.stdout + p.stderr
 
 
+def control_clone_name() -> bool:
+    """A clone is identified by its remote, not by the directory it landed in.
+
+    The regression this guards: `git clone ... playbook` used to be rejected
+    with "repository 'playbook' has no type in the contract", because the
+    validator read the folder name. CI never saw it -- Actions checks out under
+    the repository name -- so only a test with a deliberately wrong folder name
+    can keep it fixed.
+    """
+    if shutil.which("git") is None:
+        print("skip clone-name control: git is not installed")
+        return True
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td) / "playbook-clone"
+        root.mkdir()
+        build_good(root)
+        subprocess.run(["git", "init", "-q", str(root)], capture_output=True, check=False)
+        subprocess.run(
+            ["git", "-C", str(root), "remote", "add", "origin",
+             "https://github.com/ninelegsdog/botkit-delivery.git"],
+            capture_output=True, check=False,
+        )
+        code, out = run(root)
+        if code != 0:
+            print("FAIL clone-name control: remote-named repository rejected when the folder differs")
+            print("       " + out.strip().replace("\n", "\n       "))
+            return False
+        print("ok   clone-name control: remote decides the repository, not the folder")
+        return True
+
+
 def case(name: str, mutate, expect_rule: str | None = None,
          kind: str = "telegram-bot", repo: str = "botkit-delivery") -> bool:
     with tempfile.TemporaryDirectory() as td:
@@ -123,6 +154,8 @@ def main() -> int:
             print("       " + out.strip())
             return 1
         print("ok   control: clean repository is accepted")
+        if not control_clone_name():
+            return 1
 
     results = [
         case("required artifact deleted", lambda r: (r / "SECURITY.md").unlink(), "required-artifact"),
@@ -141,6 +174,12 @@ def main() -> int:
              lambda r: r.joinpath("README.md").write_text(
                  r.joinpath("README.md").read_text().replace(
                      "- [Extra](#extra)", "- [Extra](#no-such-heading)"), encoding="utf-8"),
+             "toc-anchor"),
+        case("heading inside a fence is not an anchor",
+             lambda r: r.joinpath("README.md").write_text(
+                 r.joinpath("README.md").read_text().replace(
+                     "## Extra\n\nNothing.",
+                     "```markdown\n## Extra\n```\n\nNothing."), encoding="utf-8"),
              "toc-anchor"),
         case("orphan document",
              lambda r: r.joinpath("orphan.md").write_text("# Orphan\n", encoding="utf-8"), "orphan-doc"),

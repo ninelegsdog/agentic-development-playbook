@@ -182,7 +182,7 @@
       }
     },
     "docs": {
-      "description": "A documentation-only repository. No build, no runtime, therefore no CI.",
+      "description": "A documentation-only repository. No build and no runtime; CI validates the document and the checks that guard it.",
       "required": [
         "README.md",
         "LICENSE",
@@ -197,7 +197,11 @@
         ".github/PULL_REQUEST_TEMPLATE.md",
         ".github/CODEOWNERS",
         "scripts/check-repo-contract.py",
+        "scripts/check-repo-contract_test.py",
+        "scripts/check-evidence.py",
         "scripts/repo-contract.json",
+        "evidence/README.md",
+        "evidence/metrics.json",
         "CHANGELOG.md",
         ".gitignore"
       ],

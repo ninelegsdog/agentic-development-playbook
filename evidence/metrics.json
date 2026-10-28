@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "measured_at": "2026-10-28",
+  "measured_by": "ninelegsdog",
+  "method": "uv sync + uv run pytest -q per repository, at the HEAD recorded below",
+  "environment": {
+    "os": "Linux x86_64",
+    "python": "Python 3.13.14",
+    "uv": "uv 0.11.32 (x86_64-unknown-linux-gnu)"
+  },
+  "repositories": [
+    {
+      "repo": "botkit-bookingbot",
+      "sha": "a43321f711083f390b7b0c34e8a8083213b0fad3",
+      "short": "a43321f",
+      "collected": 185,
+      "passed": 179,
+      "skipped": 6,
+      "failed": 0,
+      "coverage": 87.55,
+      "exit": 0,
+      "coverage_gate_percent": 80,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-bookingbot",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-leadgen",
+      "sha": "3fe224d3e32dac79925365123e6a48c45d091fa0",
+      "short": "3fe224d",
+      "collected": 105,
+      "passed": 102,
+      "skipped": 3,
+      "failed": 0,
+      "coverage": 74.0,
+      "exit": 0,
+      "coverage_gate_percent": 70,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-leadgen",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-store",
+      "sha": "82059d90f684036dee5ca3f4d0252cac872bd959",
+      "short": "82059d9",
+      "collected": 171,
+      "passed": 168,
+      "skipped": 3,
+      "failed": 0,
+      "coverage": 76.6,
+      "exit": 0,
+      "coverage_gate_percent": 70,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-store",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-support",
+      "sha": "cc60d09ec29c3638aaad138ce29eb40db221704e",
+      "short": "cc60d09",
+      "collected": 197,
+      "passed": 194,
+      "skipped": 3,
+      "failed": 0,
+      "coverage": 72.11,
+      "exit": 0,
+      "coverage_gate_percent": 70,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-support",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-membership",
+      "sha": "2162e2a18fbed9e1c0af46f63a4fef3ca5fd141f",
+      "short": "2162e2a",
+      "collected": 197,
+      "passed": 194,
+      "skipped": 3,
+      "failed": 0,
+      "coverage": 92.2,
+      "exit": 0,
+      "coverage_gate_percent": 90,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-membership",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-reminder",
+      "sha": "00511d54d55b2d846076a8c71d0e48bf74ca002e",
+      "short": "00511d5",
+      "collected": 170,
+      "passed": 167,
+      "skipped": 3,
+      "failed": 0,
+      "coverage": 84.39,
+      "exit": 0,
+      "coverage_gate_percent": 80,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-reminder",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-docuflow",
+      "sha": "8eb7a43fbf2e1e089ba9bf3e7504d10c532b31f0",
+      "short": "8eb7a43",
+      "collected": 156,
+      "passed": 150,
+      "skipped": 6,
+      "failed": 0,
+      "coverage": 79.35,
+      "exit": 0,
+      "coverage_gate_percent": 70,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-docuflow",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-pricesentry",
+      "sha": "cf610953b9d671741a6a081fe4244936a8fa6547",
+      "short": "cf61095",
+      "collected": 111,
+      "passed": 110,
+      "skipped": 1,
+      "failed": 0,
+      "coverage": 85.06,
+      "exit": 0,
+      "coverage_gate_percent": 70,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-pricesentry",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-delivery",
+      "sha": "291e29e9781f0289c8d9b9d8af137d25117def57",
+      "short": "291e29e",
+      "collected": 147,
+      "passed": 141,
+      "skipped": 6,
+      "failed": 0,
+      "coverage": 71.68,
+      "exit": 0,
+      "coverage_gate_percent": 70,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-delivery",
+      "command": "uv sync --frozen --all-extras && uv run pytest -q"
+    },
+    {
+      "repo": "botkit-core",
+      "sha": "5e86459b94590b680e7176c3ec43b4bf70beeee1",
+      "short": "5e86459",
+      "collected": 98,
+      "passed": 94,
+      "skipped": 4,
+      "failed": 0,
+      "coverage": 84.53,
+      "exit": 0,
+      "coverage_gate_percent": 70,
+      "gate_passed": true,
+      "url": "https://github.com/ninelegsdog/botkit-core",
+      "command": "uv sync --all-extras && uv run pytest -q"
+    }
+  ],
+  "totals": {
+    "bots": {
+      "collected": 1439,
+      "passed": 1405,
+      "skipped": 34,
+      "failed": 0
+    },
+    "core": {
+      "collected": 98,
+      "passed": 94,
+      "skipped": 4,
+      "failed": 0
+    },
+    "all": {
+      "collected": 1537,
+      "passed": 1499,
+      "skipped": 38,
+      "failed": 0
+    }
+  },
+  "coverage_range_bots_percent": [
+    71.68,
+    92.2
+  ],
+  "notes": [
+    "Coverage is measured by each repository's own pytest-cov configuration, not by a shared harness.",
+    "Coverage can move by a few tenths of a percent between dependency resolutions; the gate result is what is asserted.",
+    "botkit-core ships no uv.lock, so `uv sync --frozen` fails there; the measurement used a plain `uv sync`."
+  ]
+}

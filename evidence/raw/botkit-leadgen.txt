@@ -1,0 +1,27 @@
+# botkit-leadgen @ 3fe224d
+# command: uv sync --frozen --all-extras && uv run pytest -q
+# exit code: 0
+# captured: 2026-10-28, tail of `pytest -q` output
+
+src/admin/handlers.py            55     16     12      3    66%   40-46, 51-52, 56-63, 69-71
+src/core/callbacks.py            15      4      8      1    70%   23, 31-33
+src/core/config.py               40      6     10      1    78%   32-33, 51-54
+src/core/errors.py               48      2      8      1    95%   33, 57
+src/core/logging.py              20      0      8      1    96%   42->44
+src/core/metrics.py              63      8      2      0    85%   18-19, 72-75, 79, 83
+src/core/throttling.py           21      0      4      1    96%   24->31
+src/core/ui.py                   29      0     10      2    95%   21->23, 35->37
+src/core/webhook.py              22      2      0      0    91%   15-16
+src/escalation/scheduler.py      38      5     10      1    88%   40, 53-58
+src/leadgen/handlers.py         132     89     26      0    27%   32-46, 50-56, 60-62, 66-89, 93-127, 131-134, 138-159, 163-170, 178-202, 206-207
+src/leadgen/service.py           69     20      2      0    72%   69-70, 122-131, 135-141, 145-149, 153-158, 162-166
+-------------------------------------------------------------------------
+TOTAL                           669    152    104     11    74%
+
+16 files skipped due to complete coverage.
+Required test coverage of 70% reached. Total coverage: 74.00%
+=========================== short test summary info ============================
+SKIPPED [1] tests/e2e/test_dialog.py: set RUN_TELEGRAM_E2E=1 to run real Telegram tests
+SKIPPED [1] tests/test_integration_container.py:15: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_container.py:27: set --run-integration to run integration tests
+102 passed, 3 skipped, 4 warnings in 12.27s

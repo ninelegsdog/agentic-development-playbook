@@ -1,0 +1,30 @@
+# botkit-docuflow @ 8eb7a43
+# command: uv sync --frozen --all-extras && uv run pytest -q
+# exit code: 0
+# captured: 2026-10-28, tail of `pytest -q` output
+
+Name                       Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------
+src/admin/handlers.py         51      8     10      3    82%   33-34, 40-45, 50-51, 67
+src/core/config.py            38      2     10      0    96%   33-34
+src/core/errors.py            48      2      8      1    95%   33, 57
+src/core/logging.py           20      0      8      1    96%   42->44
+src/core/metrics.py           60     14      2      0    74%   18-19, 68-71, 75, 79, 91-96
+src/core/throttling.py        21      0      4      1    96%   24->31
+src/core/webhook.py           22      2      0      0    91%   15-16
+src/docuflow/handlers.py     152     96     34      2    32%   48-58, 62-77, 81-108, 112-156, 167-202, 206-209, 213-218, 250, 253->257
+src/docuflow/service.py       84      6      2      0    93%   147-152, 165-166
+src/generator/pdf.py          16      2      4      1    85%   14-15
+----------------------------------------------------------------------
+TOTAL                        722    132    106      9    79%
+
+20 files skipped due to complete coverage.
+Required test coverage of 70% reached. Total coverage: 79.35%
+=========================== short test summary info ============================
+SKIPPED [1] tests/e2e/test_dialog.py: set RUN_TELEGRAM_E2E=1 to run real Telegram tests
+SKIPPED [1] tests/test_integration_container.py:15: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_container.py:27: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_containers.py:7: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_containers.py:18: set --run-integration to run integration tests
+SKIPPED [1] tests/test_integration_containers.py:28: set --run-integration to run integration tests
+150 passed, 6 skipped, 4 warnings in 11.81s

@@ -6,42 +6,30 @@
 
 ## Contents
 
+- [What this is](#what-this-is)
+- [TL;DR (EN)](#tldr-en)
 - [Почему этот документ существует](#почему-этот-документ-существует)
 - [1. Что лежит в портфолио (доказательная база)](#1-что-лежит-в-портфолио-доказательная-база)
 - [2. Архитектура harness](#2-архитектура-harness)
+  - [Что даёт harness](#что-даёт-harness)
 - [3. Принципы работы с контекстом](#3-принципы-работы-с-контекстом)
 - [4. Шаблон `AGENTS.md`](#4-шаблон-agentsmd)
-- [Роли](#роли)
-- [Стек](#стек)
-- [Обязательные правила](#обязательные-правила)
-- [Контракты, которые нельзя вывести из кода](#контракты-которые-нельзя-вывести-из-кода)
-- [Гейты перед коммитом](#гейты-перед-коммитом)
-- [Где канон](#где-канон)
 - [5. Пример спецификации задачи](#5-пример-спецификации-задачи)
-- [1. Позиционирование](#1-позиционирование)
-- [2. Метрики успеха](#2-метрики-успеха)
-- [3. Scope](#3-scope)
-- [4. Сценарии](#4-сценарии)
-- [5. UX-контракт](#5-ux-контракт)
-- [6. Данные](#6-данные)
-- [7. Платежи](#7-платежи)
-- [8. Админка](#8-админка)
-- [9. Инфраструктура](#9-инфраструктура)
-- [10. Тесты и приёмка](#10-тесты-и-приёмка)
-- [11. Риски](#11-риски)
 - [6. Чек-лист ревью AI-кода](#6-чек-лист-ревью-ai-кода)
 - [7. Чек-лист безопасности секретов](#7-чек-лист-безопасности-секретов)
 - [8. Цикл тестирования и исправления](#8-цикл-тестирования-и-исправления)
+  - [Честная оговорка о покрытии](#честная-оговорка-о-покрытии)
 - [9. Передача контекста между агентами](#9-передача-контекста-между-агентами)
-- [Handoff](#handoff)
 - [10. Что я не утверждаю](#10-что-я-не-утверждаю)
 - [11. Контакты](#11-контакты)
 - [Лицензия](#лицензия)
+- [Схема harness (диаграмма)](#схема-harness-диаграмма)
 
 > **The body of this document is in Russian.** It is a methodology write-up — the agent
 > harness, context rules, the review checklists and the working rules — authored in
 > Russian and kept that way rather than machine-translated into English that would
-> misrepresent it. What follows this note is the author's own text, unaltered.
+> misrepresent it. The English front page below summarises it; the Russian text is the
+> document.
 
 ## What this is
 
@@ -54,13 +42,11 @@ The claim it argues is specific and falsifiable: the quality of agent-produced
 code is a property of the harness and the acceptance criteria, not of the model.
 A documented case study follows — nine Telegram bots, each with its own
 repository, CI and production deployment.
-> How I deliver software with AI coding agents: the harness, the context rules, the review
-> checklists and the verification discipline behind a portfolio of 9 Telegram bots running in production.
->
-> **Short version (EN):** implementation code in these projects is produced by AI coding agents
-> inside an agent harness I design — requirements, constraints, acceptance criteria, context
-> budget, tests and review gates. I own the process and the result. Below is that process,
-> written down, with the numbers that prove it runs.
+
+**Short version:** implementation code in these projects is produced by AI coding
+agents inside a harness I design — requirements, constraints, acceptance
+criteria, context budget, tests and review gates. I own the process and the
+result. Below is that process, written down, with the numbers that prove it runs.
 
 ---
 
@@ -68,14 +54,18 @@ repository, CI and production deployment.
 
 How I ship software with AI coding agents: **harness design, context engineering, strict quality gates, and verification discipline**.
 
-- **Scale:** 9 production Telegram bots, ~1038 tests (bots) + 59 in shared library, full observability stack
+- **Scale:** 9 production Telegram bots, 1,537 tests (1,439 bots + 98 core), full observability stack
 - **Key insight:** Agent output quality depends on the **harness + acceptance criteria + gates**, not the model choice
 - **Approach:** Specification → Context/AGENTS.md → Decomposition → Agent generation → Human review → Gates (lint/type/test/gitleaks) → Deploy/Verify
 - **Focus:** Making agent work reproducible, reviewable, and verifiable before production
 
+**Where the numbers come from.** Test counts and coverage were measured on
+2026-10-28 at the commits recorded in [`evidence/metrics.json`](evidence/metrics.json);
+the reproduction command is in [`evidence/README.md`](evidence/README.md). A number
+that is self-reported rather than reproduced is marked **E3**; planned work is
+marked **E4**.
+
 > The full methodology (in Russian) follows below.
-
-
 
 ## Почему этот документ существует
 
@@ -90,31 +80,35 @@ How I ship software with AI coding agents: **harness design, context engineering
 - чужой человек может повторить цикл и получить сравнимый результат;
 - видно, где проходит граница ответственности.
 
-Ниже — устройство этого процесса. Все цифры — из измеримого состояния репозиториев и
-продакшена на 2026-10-02.
+Ниже — устройство этого процесса. Все цифры — из измеримого состояния репозиториев
+на 2026-10-28; коммиты и команды — в [`evidence/metrics.json`](evidence/metrics.json).
 
 ---
 
 ## 1. Что лежит в портфолио (доказательная база)
 
-| Проект | Назначение | Тестов |
-|---|---|---|
-| [`botkit-bookingbot`](https://github.com/ninelegsdog/botkit-bookingbot) | запись и бронирование, оплата ЮKassa | 147 |
-| [`botkit-leadgen`](https://github.com/ninelegsdog/botkit-leadgen) | сбор и квалификация лидов | 88 |
-| [`botkit-store`](https://github.com/ninelegsdog/botkit-store) | каталог, корзина, заказ | 99 |
-| [`botkit-support`](https://github.com/ninelegsdog/botkit-support) | обращения, тикеты, SLA | 118 |
-| [`botkit-membership`](https://github.com/ninelegsdog/botkit-membership) | подписки, оплата, доступ | 163 |
-| [`botkit-reminder`](https://github.com/ninelegsdog/botkit-reminder) | напоминания и рассылки | 148 |
-| [`botkit-docuflow`](https://github.com/ninelegsdog/botkit-docuflow) | документы, генерация PDF | 96 |
-| [`botkit-pricesentry`](https://github.com/ninelegsdog/botkit-pricesentry) | мониторинг цен, алерты | 95 |
-| [`botkit-delivery`](https://github.com/ninelegsdog/botkit-delivery) | статусы доставки, webhook | 84 |
-| [`botkit-monitoring`](https://github.com/ninelegsdog/botkit-monitoring) | наблюдаемость: Prometheus, Grafana, Loki, Tempo, Alertmanager, OTel, MinIO | — |
+| Проект | Назначение | Тестов | Проходит |
+|---|---|---:|---:|
+| [`botkit-bookingbot`](https://github.com/ninelegsdog/botkit-bookingbot) | запись и бронирование, оплата ЮKassa | 185 | 179 |
+| [`botkit-leadgen`](https://github.com/ninelegsdog/botkit-leadgen) | сбор и квалификация лидов | 105 | 102 |
+| [`botkit-store`](https://github.com/ninelegsdog/botkit-store) | каталог, корзина, заказ | 171 | 168 |
+| [`botkit-support`](https://github.com/ninelegsdog/botkit-support) | обращения, тикеты, SLA | 197 | 194 |
+| [`botkit-membership`](https://github.com/ninelegsdog/botkit-membership) | подписки, оплата, доступ | 197 | 194 |
+| [`botkit-reminder`](https://github.com/ninelegsdog/botkit-reminder) | напоминания и рассылки | 170 | 167 |
+| [`botkit-docuflow`](https://github.com/ninelegsdog/botkit-docuflow) | документы, генерация PDF | 156 | 150 |
+| [`botkit-pricesentry`](https://github.com/ninelegsdog/botkit-pricesentry) | мониторинг цен, алерты | 111 | 110 |
+| [`botkit-delivery`](https://github.com/ninelegsdog/botkit-delivery) | статусы доставки, webhook | 147 | 141 |
+| [`botkit-core`](https://github.com/ninelegsdog/botkit-core) | общая библиотека девяти ботов | 98 | 94 |
+| [`botkit-monitoring`](https://github.com/ninelegsdog/botkit-monitoring) | наблюдаемость: Prometheus, Grafana, Loki, Tempo, Alertmanager, OTel, MinIO | — | — |
 
-**Итого ≈ 1038 тестов** в девяти ботах + 59 в общей библиотеке `botkit-core`.
-Девять ботов работают в продакшене (webhook, TLS, health-check, автоперезапуск).
+**Итого 1 439 тестов** в девяти ботах (1 405 проходят, 34 пропущены) плюс 98 в общей
+библиотеке `botkit-core` (94 проходят, 4 пропущены): **1 537 собранных, 1 499
+проходящих, 38 пропущенных**. Девять ботов работают в продакшене (webhook, TLS,
+health-check, автоперезапуск).
 
 Инфраструктура, которую я собрал вокруг них: CI/CD (lint → test → deploy → rollback),
-наблюдаемость из 12 контейнеров, бэкапы с проверкой целостности, gitleaks-гейт в CI.
+наблюдаемость из 10 сервисов в `botkit-monitoring`, бэкапы с проверкой целостности,
+gitleaks-гейт в CI ботов.
 
 ---
 
@@ -394,10 +388,17 @@ Webhook/polling, health, метрики, бэкапы, секреты.
 ### Честная оговорка о покрытии
 
 Гейт покрытия в публичных репозиториях выставлен на 70–90 % (у бота `membership`
-— 90 %), а измеренное покрытие на момент публикации — около 32 %. `pytest` в клоне репозитория завершается
-ненулевым кодом из-за гейта, а не из-за падения тестов. Это расхождение я фиксирую
-как известный долг и не выдаю за «покрытие 90 %». Полное покрытие есть на внутреннем
-монорепо, но его версия клиентам не предъявляется.
+— 90 %). На 2026-10-28 все девять ботов проходят свои гейты: измеренное покрытие
+71,7–92,2 %. На коммитах публикации (до 2026-10-03) восемь из девяти показывали
+72,7–92,9 %; у девятого в той среде не собрались тесты, что не равно низкому
+покрытию.
+
+Раньше здесь стояло «измеренное покрытие около 32 %». Это число не воспроизводится
+запуском тестов: оно получается из `pytest --collect-only`, который импортирует
+модули, но не выполняет тесты, и потому pytest-cov считает покрытие почти пустым
+(26,46 % у `bookingbot`, например). Ошибка была в способе измерения, а не в коде
+ботов. Команда, коммиты и сырые результаты — в
+[`evidence/README.md`](evidence/README.md).
 
 ---
 
@@ -445,7 +446,12 @@ Webhook/polling, health, метрики, бэкапы, секреты.
 - Я **не** утверждаю, что писал каждую строку этих проектов руками. Код производили
   AI coding-агенты; моя работа — спецификация, контекст, декомпозиция, гейты,
   ревью, деплой и результат.
-- Я **не** называю гейт покрытия 90 % там, где измерено 32 %.
+- Я **не** выдаю число, полученное `pytest --collect-only`, за измеренное покрытие:
+  цифра должна воспроизводиться запуском тестов, иначе это не измерение.
+- Я **не** привожу независимого подтверждения, что боты отвечают прямо сейчас:
+  `t.me`-ссылки и health-проверки из среды, где готовился этот текст, недоступны.
+  Зелёный deploy-run — это E2 (образ собран и запушен), а не доказательство живого
+  ответа.
 - Я **не** обещаю «бот без ошибок». Обещаю согласованный объём, критерии приёмки и
   ответственность за поставку.
 - Я **не** продаю «промпты». Продаётся работающий бот на вашем сервере, документация
