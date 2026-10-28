@@ -202,6 +202,7 @@
         "scripts/repo-contract.json",
         "evidence/README.md",
         "evidence/metrics.json",
+        "CITATION.cff",
         "CHANGELOG.md",
         ".gitignore"
       ],
