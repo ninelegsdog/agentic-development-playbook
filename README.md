@@ -9,6 +9,14 @@
 
 - [What this is](#what-this-is)
 - [TL;DR (EN)](#tldr-en)
+- [The claim](#the-claim)
+- [Proof](#proof)
+- [How it works](#how-it-works)
+- [What you can reuse](#what-you-can-reuse)
+- [What this does not claim](#what-this-does-not-claim)
+- [Start here](#start-here)
+- [Related projects](#related-projects)
+- [Citing, license, contact](#citing-license-contact)
 - [Почему этот документ существует](#почему-этот-документ-существует)
 - [1. Что лежит в портфолио (доказательная база)](#1-что-лежит-в-портфолио-доказательная-база)
 - [2. Архитектура harness](#2-архитектура-harness)
@@ -66,6 +74,66 @@ How I ship software with AI coding agents: **harness design, context engineering
 the reproduction command is in [`evidence/README.md`](evidence/README.md). A number
 that is self-reported rather than reproduced is marked **E3**; planned work is
 marked **E4**.
+
+## The claim
+
+The quality of agent-produced code is a property of the **harness and the
+acceptance criteria**, not of the model. A documented case study follows: nine
+Telegram bots, each with its own repository, CI and production deployment.
+
+## Proof
+
+- 1,537 collected tests, 1,499 passing, 38 skipped, across ten repositories
+  ([evidence/metrics.json](evidence/metrics.json)).
+- Measured coverage 71.7–92.2 %, every bot above its 70–90 % gate.
+- Last `deploy.yml` run: success for all nine bots, 2026-10-20/21.
+- 10-service observability stack in production (Prometheus, Grafana, Loki, Tempo,
+  Alertmanager, OTel, MinIO).
+
+## How it works
+
+Specification → context (`AGENTS.md`, `CODE_STYLE.md`) → decomposition into
+verifiable stages → agent generation → human review → gates (ruff, mypy, pytest,
+gitleaks) → deploy → smoke → acceptance. An error returns to the context as a
+fact, not as "try again".
+
+## What you can reuse
+
+- [`templates/AGENTS.md`](templates/AGENTS.md), [`templates/spec.md`](templates/spec.md),
+  [`templates/handoff.md`](templates/handoff.md), and two checklists — copy, fill
+  in the `<...>` fields, delete what does not apply.
+- The evidence discipline: every number carries a date, a command, a commit and a
+  level (E1–E4).
+- The review checklists for AI-written code and for secrets.
+
+## What this does not claim
+
+- I did not write every line by hand. Agents produced the code; I own the
+  specification, context, decomposition, gates, review and delivery.
+- I do not claim 90 % coverage where 71.7–92.2 % was measured.
+- I do not promise a bot without errors. I promise a scoped delivery with
+  acceptance criteria and responsibility for it.
+- A green deploy-run (E2) proves an image was built and pushed, not that the
+  process answers right now.
+
+## Start here
+
+- Russian canon: [docs/ru/00-index.md](docs/ru/00-index.md).
+- English outline of each chapter: [docs/en/00-index.md](docs/en/00-index.md).
+- Templates: [templates/README.md](templates/README.md).
+- Evidence: [evidence/README.md](evidence/README.md).
+- Claims registry: [evidence/claims.yml](evidence/claims.yml).
+
+## Related projects
+
+Nine bots (booking, leadgen, store, support, membership, reminder, docuflow,
+pricesentry, delivery), the shared library `botkit-core`, and
+`botkit-monitoring` (10 services). See [docs/ru/02-portfolio.md](docs/ru/02-portfolio.md).
+
+## Citing, license, contact
+
+MIT. Cite by version: see [CITATION.cff](CITATION.cff). Contact:
+[@ninelegsdog](https://t.me/ninelegsdog), [github.com/ninelegsdog](https://github.com/ninelegsdog).
 
 > The full methodology (in Russian) follows below.
 

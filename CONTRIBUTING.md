@@ -55,6 +55,9 @@ after it.
 - **The body is Russian; the front page is English.** The Russian text is the
   author's own writing and is not machine-translated. An English summary at the
   top is a summary, not a translation, and must say so.
+- **`docs/en/` is an outline, not a translation.** Each file states plainly that
+  the Russian text is the canon and links to it. Machine translation of a whole
+  chapter is not allowed.
 - **Headings inside code fences are not anchors.** If you add a table-of-contents
   entry, point it at a rendered heading. The checker now enforces this; before
   it did, 18 of 31 anchors in this README were dead.
