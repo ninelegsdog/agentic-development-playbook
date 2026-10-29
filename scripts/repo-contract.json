@@ -199,9 +199,11 @@
         "scripts/check-repo-contract.py",
         "scripts/check-repo-contract_test.py",
         "scripts/check-evidence.py",
+        "scripts/check-templates.py",
         "scripts/repo-contract.json",
         "evidence/README.md",
         "evidence/metrics.json",
+        "templates/README.md",
         "CITATION.cff",
         "CHANGELOG.md",
         ".gitignore"

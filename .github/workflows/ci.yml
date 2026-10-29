@@ -29,6 +29,10 @@ jobs:
         run: |
           python3 scripts/check-evidence.py
           python3 scripts/check-evidence.py --self-test
+      - name: Templates are reusable
+        run: |
+          python3 scripts/check-templates.py
+          python3 scripts/check-templates.py --self-test
 
   secrets:
     name: Secret scan

@@ -268,7 +268,7 @@ def check_placeholders(text: str, rep: Report) -> None:
 def check_links(root: Path, rep: Report) -> None:
     """Every relative link in the documentation must resolve."""
     docs = [root / "README.md"]
-    for sub in ("docs", "evidence"):
+    for sub in ("docs", "evidence", "templates"):
         if (root / sub).is_dir():
             docs += sorted((root / sub).rglob("*.md"))
     for doc in docs:
