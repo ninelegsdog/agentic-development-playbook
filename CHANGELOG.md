@@ -8,7 +8,15 @@ release, and a restructure that moves anchors is a major one.
 
 ## [Unreleased]
 
-## [1.0.0] — 2026-10-28
+### Added
+- `templates/` with five reusable templates (`AGENTS.md`, `spec.md`, `handoff.md`,
+  `review-checklist.md`, `secrets-checklist.md`) and `templates/README.md`.
+- `scripts/check-templates.py` with `--self-test` (4 mutations caught).
+- Version badge in README.
+
+### Changed
+- README sections 4, 5 and 9 now link to `templates/` instead of inlining the
+  full blocks.
 
 The first tagged release. It corrects claims that were published before this date
 and replaces the governance files that had been copied from a bot repository. The
