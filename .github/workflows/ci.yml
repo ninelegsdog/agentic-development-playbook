@@ -33,6 +33,18 @@ jobs:
         run: |
           python3 scripts/check-templates.py
           python3 scripts/check-templates.py --self-test
+      - name: Claims are registered
+        run: |
+          pip install --quiet pyyaml==6.0.1
+          python3 scripts/check-claims.py
+          python3 scripts/check-claims.py --self-test
+      - name: Version surfaces agree
+        run: python3 scripts/check-version.py
+      - name: External links (lychee)
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8  # v2.9.0
+        with:
+          args: "--config lychee.toml --no-progress '**/*.md'"
+          fail: true
 
   secrets:
     name: Secret scan

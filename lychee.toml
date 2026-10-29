@@ -1,0 +1,20 @@
+# Lychee configuration for the playbook repository.
+# Only EXTERNAL links are checked; relative links are covered by
+# scripts/check-repo-contract.py (check_links).
+
+# t.me is reachable from a browser but not from GitHub runners (Telegram blocks
+# the runner IP ranges), so it is excluded with a reason rather than a failure.
+# Re-check manually once a quarter, per evidence/maintenance.md.
+exclude = [
+  "^https://t\\.me/",
+]
+
+# Retry flaky hosts.
+max_retries = 3
+retry_wait_time = 5
+
+# Time out slow hosts rather than hanging the job.
+timeout = 30
+
+# Accept 200 and a few common "soft" responses.
+accept = [200, 204, 301, 302, 307, 308, 429]

@@ -18,6 +18,8 @@ release, and a restructure that moves anchors is a major one.
 - README sections 4, 5 and 9 now link to `templates/` instead of inlining the
   full blocks.
 
+## [1.0.0] — 2026-10-28
+
 The first tagged release. It corrects claims that were published before this date
 and replaces the governance files that had been copied from a bot repository. The
 author's methodology text and its structure are unchanged except where a claim
