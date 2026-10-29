@@ -47,12 +47,15 @@ def as_int(value: str) -> int:
     return int(value.replace(" ", "").replace("\u00a0", ""))
 
 
-def verify(readme_text: str, metrics: dict) -> list[str]:
+def verify(texts: list[str], metrics: dict) -> list[str]:
     """Every disagreement between the prose and the measurement."""
     problems: list[str] = []
-    flat = re.sub(r"\s+", " ", readme_text)
+    flat = re.sub(r"\s+", " ", " ".join(texts))
 
-    rows = {m.group("repo"): m for m in ROW.finditer(readme_text)}
+    rows: dict[str, re.Match] = {}
+    for t in texts:
+        for m in ROW.finditer(t):
+            rows[m.group("repo")] = m
     for entry in metrics["repositories"]:
         repo = entry["repo"]
         row = rows.get(repo)
@@ -97,10 +100,10 @@ def verify(readme_text: str, metrics: dict) -> list[str]:
     return problems
 
 
-def self_test(readme_text: str, metrics: dict) -> bool:
+def self_test(texts: list[str], metrics: dict) -> bool:
     """Break each rule on purpose and require the checker to notice."""
     cases: list[tuple[str, str, dict]] = []
-    original = readme_text
+    original = " ".join(texts) if texts else ""
 
     mutated = original.replace("| 185 | 179 |", "| 184 | 179 |", 1)
     cases.append(("row count changed", mutated, metrics))
@@ -119,7 +122,7 @@ def self_test(readme_text: str, metrics: dict) -> bool:
 
     ok = True
     for name, text, data in cases:
-        problems = verify(text, data)
+        problems = verify([text], data)
         if problems:
             print(f"ok   self-test: {name} is caught ({problems[0]})")
         else:
@@ -133,12 +136,15 @@ def main() -> int:
         print("cannot verify: evidence/metrics.json or README.md is missing", file=sys.stderr)
         return EXIT_CANNOT_VERIFY
     metrics = json.loads(METRICS.read_text(encoding="utf-8"))
-    readme_text = README.read_text(encoding="utf-8")
+    texts = [README.read_text(encoding="utf-8")]
+    portfolio = ROOT / "docs" / "ru" / "02-portfolio.md"
+    if portfolio.is_file():
+        texts.append(portfolio.read_text(encoding="utf-8"))
 
     if "--self-test" in sys.argv:
-        return EXIT_OK if self_test(readme_text, metrics) else EXIT_FAIL
+        return EXIT_OK if self_test(texts, metrics) else EXIT_FAIL
 
-    problems = verify(readme_text, metrics)
+    problems = verify(texts, metrics)
     if problems:
         print(f"README disagrees with evidence/metrics.json ({len(problems)} problem(s))")
         for p in problems:

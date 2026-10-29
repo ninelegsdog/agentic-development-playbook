@@ -8,15 +8,34 @@ release, and a restructure that moves anchors is a major one.
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-10-29
+
+Minor release: the Russian canon moved to `docs/ru/`, the README became an
+English landing page, and the migration is lossless (verified by
+`scripts/check-doc-split.py`: 43 paragraphs present). Anchors are preserved via
+compat headings, so this is a minor, not a major.
+
 ### Added
-- `templates/` with five reusable templates (`AGENTS.md`, `spec.md`, `handoff.md`,
-  `review-checklist.md`, `secrets-checklist.md`) and `templates/README.md`.
-- `scripts/check-templates.py` with `--self-test` (4 mutations caught).
+- `docs/ru/` — 12 chapters + `00-index.md` (Russian canon).
+- `evidence/README.v1.0.0.md` — frozen pre-split snapshot for migration checks.
+- `scripts/check-doc-split.py` — lossless-migration verifier.
+- `scripts/check-claims.py`, `scripts/check-version.py`, `scripts/refresh-evidence.sh`.
+- `evidence/claims.yml` (20 claims, E1–E4), `evidence/maintenance.md`.
+- `templates/` with five reusable templates and `templates/README.md`.
+- `scripts/check-templates.py` with `--self-test`.
+- `lychee.toml` + external link check in CI.
+- `.github/workflows/refresh-evidence.yml`, `.github/workflows/release.yml`.
 - Version badge in README.
 
 ### Changed
-- README sections 4, 5 and 9 now link to `templates/` instead of inlining the
-  full blocks.
+- README is now an English landing page + compat headings (old anchors preserved).
+- Relative links in chapters point at `../../templates/` and `../../evidence/`.
+- `check-repo-contract.py`: `check_contents` works on docs/ chapters; `check_doc_orphans` for docs/.
+- `check_links` now scans `docs/`, `evidence/`, `templates/`.
+- `AGENTS.md`, `CONTRIBUTING.md` updated for the new structure.
+
+### Fixed
+- (carried from 1.0.0) coverage claim, test counts, 18 dead TOC anchors, governance copy-paste, dead CI.
 
 ## [1.0.0] — 2026-10-28
 

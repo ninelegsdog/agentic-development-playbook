@@ -16,5 +16,6 @@ retry_wait_time = 5
 # Time out slow hosts rather than hanging the job.
 timeout = 30
 
-# Accept 200 and a few common "soft" responses.
-accept = [200, 204, 301, 302, 307, 308, 429]
+# Frozen snapshot of the pre-split README; its links are root-relative and
+# illustrative, so lychee must not check them.
+exclude_path = [".*README\\.v1\\.0\\.0\\.md"]
