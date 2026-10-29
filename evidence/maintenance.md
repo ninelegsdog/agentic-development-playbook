@@ -23,10 +23,10 @@
 
 ## On a structural change
 
-1. If anchors move, that is a major release (2.x) per the CHANGELOG policy.
+1. The whole book lives in README.md. If it is split or merged, run
+   `check-doc-split.py` against the frozen snapshot first.
+2. If anchors move, that is a major release (2.x) per the CHANGELOG policy.
    Decide before editing, not after.
-2. Update `docs/ru/` and `docs/en/` together; never let one lag.
-3. Run `check-doc-split.py` if README was split or merged.
 
 ## Checklist before tagging
 
