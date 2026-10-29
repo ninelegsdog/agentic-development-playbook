@@ -50,6 +50,9 @@ def _version_ge(a: str, b: str) -> bool:
     def parts(v: str) -> tuple[int, ...]:
         return tuple(int(x) for x in v.split(".") if x.isdigit())
     return parts(a) >= parts(b)
+
+
+def changelog_has(version: str) -> bool:
     p = ROOT / "CHANGELOG.md"
     if not p.is_file():
         return False
