@@ -8,8 +8,8 @@ authors:
 repository-code: "https://github.com/ninelegsdog/agentic-development-playbook"
 url: "https://github.com/ninelegsdog/agentic-development-playbook"
 license: MIT
-version: 1.0.0
-date-released: 2026-10-28
+version: 1.2.0
+date-released: 2026-10-29
 keywords:
   - ai-agents
   - software-engineering
