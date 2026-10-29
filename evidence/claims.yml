@@ -1,0 +1,177 @@
+# Registry of factual claims in the README and in docs/.
+#
+# The README quotes numbers from evidence/metrics.json, but it also makes claims
+# that are not numbers: "nine bots in production", "gitleaks in CI", "no
+# machine translation". Each such claim lives here with its level, so a reader
+# can see what kind of fact it is and how to check it.
+#
+# Levels (see CONTRIBUTING.md):
+#   E1  reproducible from a public repository with one command
+#   E2  observed on a running system, with a link to the run
+#   E3  self-reported by the author or a vendor, not independently checked
+#   E4  planned or intended, not yet true
+#
+# check-claims.py verifies that every claim referenced from the docs as [E:id]
+# exists here, carries level/source/measured_at, and is not older than 30 days
+# when run in CI on a schedule.
+
+claims:
+  - id: tests.total
+    claim: "Девять ботов собирают 1 537 тестов (1 439 в ботах + 98 в botkit-core)."
+    level: E1
+    source: evidence/metrics.json
+    measured_at: 2026-10-28
+    command: "uv sync --frozen --all-extras && uv run pytest -q (botkit-core: без --frozen)"
+    verified_by: agent
+
+  - id: tests.bots
+    claim: "В девяти ботах 1 439 собранных тестов."
+    level: E1
+    source: evidence/metrics.json
+    measured_at: 2026-10-28
+    command: "см. tests.total"
+    verified_by: agent
+
+  - id: tests.core
+    claim: "В botkit-core 98 собранных тестов."
+    level: E1
+    source: evidence/metrics.json
+    measured_at: 2026-10-28
+    command: "см. tests.total"
+    verified_by: agent
+
+  - id: tests.passed
+    claim: "1 499 из 1 537 тестов проходят; 38 пропущены; 0 упали."
+    level: E1
+    source: evidence/metrics.json
+    measured_at: 2026-10-28
+    command: "см. tests.total"
+    verified_by: agent
+
+  - id: coverage.range
+    claim: "Измеренное покрытие девяти ботов — 71,7–92,2 % на 2026-10-28."
+    level: E1
+    source: evidence/metrics.json
+    measured_at: 2026-10-28
+    command: "см. tests.total"
+    verified_by: agent
+
+  - id: coverage.gate
+    claim: "Гейт покрытия в публичных репозиториях выставлен на 70–90 % (membership — 90 %)."
+    level: E1
+    source: "pyproject.toml каждого бота (--cov-fail-under)"
+    measured_at: 2026-10-28
+    command: "grep -rhoE 'cov-fail-under=[0-9]+' */pyproject.toml"
+    verified_by: agent
+
+  - id: coverage.publication
+    claim: "На коммитах публикации (до 2026-10-03) восемь из девяти ботов показывали 72,7–92,9 %."
+    level: E1
+    source: "аудит 2026-10-28, замер на старых SHA"
+    measured_at: 2026-10-28
+    command: "uv run pytest --cov на коммитах публикации"
+    verified_by: agent
+
+  - id: coverage.collect_only
+    claim: "Число «около 32 %» получается из `pytest --collect-only` (26,46 % у bookingbot)."
+    level: E1
+    source: "measure-botkit-bookingbot.txt"
+    measured_at: 2026-10-28
+    command: "uv run pytest --collect-only -q"
+    verified_by: agent
+
+  - id: infra.services
+    claim: "botkit-monitoring собирает 10 сервисов (Prometheus, Grafana, Loki, Tempo, Alertmanager, OTel Collector, MinIO, promtail, node-exporter, blackbox-exporter)."
+    level: E1
+    source: "botkit-monitoring/docker-compose.yml"
+    measured_at: 2026-10-28
+    command: "python3 -c 'import yaml; print(len(yaml.safe_load(open(\"docker-compose.yml\"))[\"services\"]))'"
+    verified_by: agent
+
+  - id: bots.count
+    claim: "Девять Telegram-ботов работают в продакшене (webhook, TLS, health-check, автоперезапуск)."
+    level: E2
+    source: "deploy-runs 2026-10-20/21 (success)"
+    measured_at: 2026-10-28
+    command: "gh run list --workflow deploy.yml"
+    verified_by: agent
+
+  - id: bots.live_health
+    claim: "Боты отвечают прямо сейчас."
+    level: E3
+    source: "не проверено: t.me и health недоступны из среды аудита"
+    measured_at: 2026-10-28
+    command: "n/a"
+    verified_by: self-reported
+
+  - id: deploy.runs
+    claim: "Последние deploy.yml у всех девяти ботов — success (2026-10-20/21)."
+    level: E2
+    source: "GitHub Actions runs"
+    measured_at: 2026-10-28
+    command: "gh run list --workflow deploy.yml"
+    verified_by: agent
+
+  - id: ci.gitleaks_bots
+    claim: "gitleaks-гейт есть в CI ботов (12 workflow содержат gitleaks)."
+    level: E1
+    source: "grep -rl gitleaks botkit-*/.github/workflows/*.yml"
+    measured_at: 2026-10-28
+    command: "grep -rl gitleaks botkit-*/.github/workflows/*.yml | wc -l"
+    verified_by: agent
+
+  - id: anchors.toc_before
+    claim: "До исправления 18 из 31 якоря Contents вели на заголовки внутри code fence."
+    level: E1
+    source: "scripts/check-repo-contract.py до фикса (выход: 18 toc-anchor)"
+    measured_at: 2026-10-28
+    command: "python3 scripts/check-repo-contract.py (на старом README)"
+    verified_by: agent
+
+  - id: anchors.toc_after
+    claim: "После исправления все 39 ссылок Contents резолвятся в HTML, который отдаёт GitHub."
+    level: E1
+    source: "HTML страницы репозитория (id=user-content-*)"
+    measured_at: 2026-10-28
+    command: "curl .../ninelegsdog/agentic-development-playbook + сравнение href/id"
+    verified_by: agent
+
+  - id: repo.type
+    claim: "Репозиторий имеет тип docs в общем контракте."
+    level: E1
+    source: "scripts/repo-contract.json (repos.agentic-development-playbook = docs)"
+    measured_at: 2026-10-28
+    command: "python3 scripts/check-repo-contract.py . scripts/repo-contract.json"
+    verified_by: agent
+
+  - id: line_length
+    claim: "Строка ≤ 120 символов (текст — ≤ 100)."
+    level: E1
+    source: "AGENTS.md этого репозитория"
+    measured_at: 2026-10-28
+    command: "ruff (line-length = 120 в .ruff? нет — ручной)"
+    verified_by: self-reported
+
+  - id: evidence.staleness
+    claim: "Метрики старше 30 дней считаются устаревшими."
+    level: E4
+    source: "план P1, W4.2"
+    measured_at: 2026-10-29
+    command: "n/a (план)"
+    verified_by: planned
+
+  - id: templates.count
+    claim: "В templates/ пять шаблонов: AGENTS.md, spec.md, handoff.md, review-checklist.md, secrets-checklist.md."
+    level: E1
+    source: "ls templates/"
+    measured_at: 2026-10-29
+    command: "ls templates/*.md"
+    verified_by: agent
+
+  - id: release.version
+    claim: "Текущий релиз — v1.0.0 (2026-10-28)."
+    level: E1
+    source: "git tag v1.0.0, GitHub Release"
+    measured_at: 2026-10-28
+    command: "git describe --tags --abbrev=0"
+    verified_by: agent

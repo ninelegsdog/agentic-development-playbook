@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Publish GitHub Release from CHANGELOG
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v5.0.0
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v6.0.0
+        with:
+          python-version: "3.12"
+      - name: Version surfaces agree
+        run: python3 scripts/check-version.py
+      - name: Extract release notes
+        run: |
+          python3 - "$GITHUB_REF_NAME" <<'PY'
+          import re, pathlib, sys
+          tag = sys.argv[1].lstrip("v")
+          text = pathlib.Path("CHANGELOG.md").read_text(encoding="utf-8")
+          m = re.search(rf"^## \[{re.escape(tag)}\].*?(?=^## \[|\Z)", text, re.S | re.M)
+          if not m:
+              raise SystemExit(f"no CHANGELOG section for {tag}")
+          pathlib.Path("/tmp/notes.md").write_text(m.group(0).strip() + "\n", encoding="utf-8")
+          PY
+      - name: Create release
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file /tmp/notes.md
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

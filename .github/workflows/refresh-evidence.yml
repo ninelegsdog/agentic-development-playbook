@@ -1,0 +1,44 @@
+name: Refresh evidence
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 1 * *"   # monthly, 1st of the month
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    name: Re-measure the ten repositories
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v5.0.0
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v6.0.0
+        with:
+          python-version: "3.12"
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Run refresh
+        id: refresh
+        run: |
+          set +e
+          ./scripts/refresh-evidence.sh
+          echo "drift=$?" >> "$GITHUB_OUTPUT"
+      - name: Open PR if drifted
+        if: steps.refresh.outputs.drift == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="refresh-evidence-$(date -u +%Y%m%d)"
+          git checkout -b "$BRANCH"
+          git add evidence/metrics.json evidence/raw
+          git commit -m "chore(evidence): monthly refresh of the ten repositories"
+          git push origin "$BRANCH"
+          gh pr create --base main --head "$BRANCH" \
+            --title "chore(evidence): monthly refresh" \
+            --body "Automated re-measurement of the ten public repositories. Review the diff in evidence/metrics.json before merging."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
