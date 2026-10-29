@@ -219,7 +219,7 @@ def check_contents(text: str, rep: Report, require_toc: bool = True, label: str 
 
     in_toc = False
     for line in visible.splitlines():
-        if re.match(r"^#{1,6}\s+Contents\s*$", line):
+        if re.match(r"^#{1,6}\s+(Contents|Оглавление)\s*$", line):
             in_toc = True
             continue
         if in_toc and re.match(r"^#{1,6}\s+", line):
@@ -232,7 +232,7 @@ def check_contents(text: str, rep: Report, require_toc: bool = True, label: str 
                     rep.ok()
 
     if require_toc:
-        if not re.search(r"^#{1,6}\s+Contents\s*$", visible, re.MULTILINE):
+        if not re.search(r"^#{1,6}\s+(Contents|Оглавление)\s*$", visible, re.MULTILINE):
             rep.fail("toc", f"{label} has no Contents section")
         else:
             rep.ok()

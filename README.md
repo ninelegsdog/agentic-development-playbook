@@ -5,7 +5,7 @@
 [![CI](https://github.com/ninelegsdog/agentic-development-playbook/actions/workflows/ci.yml/badge.svg)](https://github.com/ninelegsdog/agentic-development-playbook/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/ninelegsdog/agentic-development-playbook.svg)](https://github.com/ninelegsdog/agentic-development-playbook/releases)
 
-## Contents
+## Оглавление
 
 - [Почему этот документ существует](#почему-этот-документ-существует)
 - [1. Что лежит в портфолио (доказательная база)](#1-что-лежит-в-портфолио-доказательная-база)
