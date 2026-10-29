@@ -53,7 +53,7 @@
 ---
 
 
-# Схема harness (диаграмма)
+## Схема harness (диаграмма)
 
 ```mermaid
 flowchart TD
