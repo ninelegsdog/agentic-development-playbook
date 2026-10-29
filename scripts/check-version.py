@@ -46,6 +46,12 @@ def citation_version() -> str | None:
     return None
 
 
+def _version_ge(a: str, b: str) -> bool:
+    def parts(v: str) -> tuple[int, ...]:
+        return tuple(int(x) for x in v.split(".") if x.isdigit())
+    return parts(a) >= parts(b)
+
+
 def changelog_has(version: str) -> bool:
     p = ROOT / "CHANGELOG.md"
     if not p.is_file():
@@ -63,16 +69,18 @@ def main() -> int:
         print("cannot verify: CITATION.cff has no version", file=sys.stderr)
         return EXIT_CANNOT_VERIFY
     problems = []
-    if cit != tag:
-        problems.append(f"CITATION.cff says {cit}, latest tag is {tag}")
-    if not changelog_has(tag):
-        problems.append(f"CHANGELOG.md has no section for [{tag}]")
+    if cit != tag and not _version_ge(cit, tag):
+        problems.append(f"CITATION.cff version {cit} is older than latest tag {tag}")
+    if not changelog_has(cit):
+        problems.append(f"CHANGELOG.md has no section for [{cit}]")
+    if tag and not changelog_has(tag):
+        problems.append(f"CHANGELOG.md has no section for the latest tag [{tag}]")
     if problems:
         print("version surfaces disagree:")
         for p in problems:
             print(f"  {p}")
         return EXIT_FAIL
-    print(f"version surfaces agree: {tag}")
+    print(f"version surfaces agree: citation={cit}, latest tag={tag}")
     return EXIT_OK
 
 
