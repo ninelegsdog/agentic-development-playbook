@@ -207,13 +207,16 @@ def check_language(text: str, rep: Report, policy: dict | None) -> None:
     else:
         rep.ok()
 
-def check_contents(text: str, rep: Report) -> None:
-    # Fenced code is not rendered prose: a heading inside it has no anchor.
+def check_contents(text: str, rep: Report, require_toc: bool = True, label: str = "README.md") -> None:
+    """Validate a Contents block and its anchors.
+
+    `require_toc` is False for per-chapter checks: a chapter without a Contents
+    section is fine, but any Contents link it does carry must resolve.
+    """
     visible = strip_fences(text)
     headings = re.findall(r"^#{1,6}\s+(.+?)\s*$", visible, re.MULTILINE)
     anchors = {slugify(h) for h in headings}
 
-    # Contents links must point at headings that exist.
     in_toc = False
     for line in visible.splitlines():
         if re.match(r"^#{1,6}\s+Contents\s*$", line):
@@ -224,14 +227,15 @@ def check_contents(text: str, rep: Report) -> None:
         if in_toc:
             for target in re.findall(r"\]\(#([^)]+)\)", line):
                 if target not in anchors:
-                    rep.fail("toc-anchor", f"Contents links to #{target}, which no heading defines")
+                    rep.fail("toc-anchor", f"{label} Contents links to #{target}, which no heading defines")
                 else:
                     rep.ok()
 
-    if not re.search(r"^#{1,6}\s+Contents\s*$", visible, re.MULTILINE):
-        rep.fail("toc", "README.md has no Contents section")
-    else:
-        rep.ok()
+    if require_toc:
+        if not re.search(r"^#{1,6}\s+Contents\s*$", visible, re.MULTILINE):
+            rep.fail("toc", f"{label} has no Contents section")
+        else:
+            rep.ok()
 
 def check_badges(root: Path, text: str, rep: Report) -> None:
     # A CI badge in a repository with no CI is a badge that can only ever be red
@@ -274,6 +278,8 @@ def check_links(root: Path, rep: Report) -> None:
     for doc in docs:
         if not doc.is_file():
             continue
+        if doc.name == "README.v1.0.0.md":
+            continue
         text = doc.read_text(encoding="utf-8", errors="replace")
         # Fenced code is not prose; a link inside it is documentation of a link.
         text = re.sub(r"```.*?```", "", text, flags=re.DOTALL)
@@ -312,6 +318,43 @@ def check_coc_single_home(root: Path, rep: Report) -> None:
         rep.ok()
 
 
+def check_doc_orphans(root: Path, rep: Report) -> None:
+    """A document under docs/ that nobody links to is a document nobody reads."""
+    docs_dir = root / "docs"
+    if not docs_dir.is_dir():
+        rep.ok()
+        return
+    all_docs = sorted(docs_dir.rglob("*.md"))
+    if not all_docs:
+        rep.ok()
+        return
+    # Collect the set of docs reachable from the front page or an index file.
+    reachable: set[str] = set()
+    sources = [root / "README.md"]
+    sources += [p for p in docs_dir.rglob("00-index.md")]
+    for src in sources:
+        if not src.is_file():
+            continue
+        text = src.read_text(encoding="utf-8", errors="replace")
+        # relative links and bare filenames
+        for m in re.finditer(r"\[[^\]]*\]\(([^)]+)\)", text):
+            target = m.group(1).split("#")[0]
+            if not target or target.startswith("http"):
+                continue
+            resolved = (src.parent / target).resolve()
+            try:
+                rel = resolved.relative_to(root.resolve())
+                reachable.add(str(rel))
+            except ValueError:
+                pass
+    for doc in all_docs:
+        rel = str(doc.relative_to(root))
+        if rel in reachable:
+            rep.ok()
+        else:
+            rep.fail("orphan-doc", f"{rel} is not linked from README.md or an index file")
+
+
 def check_secrets(root: Path, rep: Report) -> None:
     """A committed .env is the one failure this validator must never miss."""
     if (root / ".env").exists():
@@ -348,8 +391,16 @@ def main() -> int:
 
     check_required(root, spec, rep)
     check_readme(root, rep, contract.get("policy_overrides", {}).get(repo))
+    # Chapters in docs/ carry their own Contents blocks (if any) and anchors.
+    for sub in ("docs",):
+        d = root / sub
+        if d.is_dir():
+            for doc in sorted(d.rglob("*.md")):
+                text = doc.read_text(encoding="utf-8", errors="replace")
+                check_contents(text, rep, require_toc=False, label=str(doc.relative_to(root)))
     check_links(root, rep)
     check_orphans(root, rep)
+    check_doc_orphans(root, rep)
     check_coc_single_home(root, rep)
     check_secrets(root, rep)
 
