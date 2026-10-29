@@ -7,16 +7,6 @@
 
 ## Contents
 
-- [What this is](#what-this-is)
-- [TL;DR (EN)](#tldr-en)
-- [The claim](#the-claim)
-- [Proof](#proof)
-- [How it works](#how-it-works)
-- [What you can reuse](#what-you-can-reuse)
-- [What this does not claim](#what-this-does-not-claim)
-- [Start here](#start-here)
-- [Related projects](#related-projects)
-- [Citing, license, contact](#citing-license-contact)
 - [Почему этот документ существует](#почему-этот-документ-существует)
 - [1. Что лежит в портфолио (доказательная база)](#1-что-лежит-в-портфолио-доказательная-база)
 - [2. Архитектура harness](#2-архитектура-harness)
@@ -34,107 +24,11 @@
 - [Лицензия](#лицензия)
 - [Схема harness (диаграмма)](#схема-harness-диаграмма)
 
-> **The body of this document is in Russian.** It is a methodology write-up — the agent
-> harness, context rules, the review checklists and the working rules — authored in
-> Russian and kept that way rather than machine-translated into English that would
-> misrepresent it. The English front page below summarises it; the Russian text is the
-> document.
-
-## What this is
-
-How I deliver software with AI coding agents: the harness they run inside, the
-context engineering that keeps a long task coherent, the review checklists for
-AI-written code and secrets, and the rules an agent follows when it touches this
-portfolio.
-
-The claim it argues is specific and falsifiable: the quality of agent-produced
-code is a property of the harness and the acceptance criteria, not of the model.
-A documented case study follows — nine Telegram bots, each with its own
-repository, CI and production deployment.
-
-**Short version:** implementation code in these projects is produced by AI coding
-agents inside a harness I design — requirements, constraints, acceptance
-criteria, context budget, tests and review gates. I own the process and the
-result. Below is that process, written down, with the numbers that prove it runs.
+> **Документ написан на русском.** Методика и чек-листы автора; шаблоны и
+> доказательная база — в [`templates/`](templates/README.md) и
+> [`evidence/`](evidence/README.md).
 
 ---
-
-## TL;DR (EN)
-
-How I ship software with AI coding agents: **harness design, context engineering, strict quality gates, and verification discipline**.
-
-- **Scale:** 9 production Telegram bots, 1,537 tests (1,439 bots + 98 core), full observability stack
-- **Key insight:** Agent output quality depends on the **harness + acceptance criteria + gates**, not the model choice
-- **Approach:** Specification → Context/AGENTS.md → Decomposition → Agent generation → Human review → Gates (lint/type/test/gitleaks) → Deploy/Verify
-- **Focus:** Making agent work reproducible, reviewable, and verifiable before production
-
-**Where the numbers come from.** Test counts and coverage were measured on
-2026-10-28 at the commits recorded in [`evidence/metrics.json`](evidence/metrics.json);
-the reproduction command is in [`evidence/README.md`](evidence/README.md). A number
-that is self-reported rather than reproduced is marked **E3**; planned work is
-marked **E4**.
-
-## The claim
-
-The quality of agent-produced code is a property of the **harness and the
-acceptance criteria**, not of the model. A documented case study follows: nine
-Telegram bots, each with its own repository, CI and production deployment.
-
-## Proof
-
-- 1,537 collected tests, 1,499 passing, 38 skipped, across ten repositories
-  ([evidence/metrics.json](evidence/metrics.json)).
-- Measured coverage 71.7–92.2 %, every bot above its 70–90 % gate.
-- Last `deploy.yml` run: success for all nine bots, 2026-10-20/21.
-- 10-service observability stack in production (Prometheus, Grafana, Loki, Tempo,
-  Alertmanager, OTel, MinIO).
-
-## How it works
-
-Specification → context (`AGENTS.md`, `CODE_STYLE.md`) → decomposition into
-verifiable stages → agent generation → human review → gates (ruff, mypy, pytest,
-gitleaks) → deploy → smoke → acceptance. An error returns to the context as a
-fact, not as "try again".
-
-## What you can reuse
-
-- [`templates/AGENTS.md`](templates/AGENTS.md), [`templates/spec.md`](templates/spec.md),
-  [`templates/handoff.md`](templates/handoff.md), and two checklists — copy, fill
-  in the `<...>` fields, delete what does not apply.
-- The evidence discipline: every number carries a date, a command, a commit and a
-  level (E1–E4).
-- The review checklists for AI-written code and for secrets.
-
-## What this does not claim
-
-- I did not write every line by hand. Agents produced the code; I own the
-  specification, context, decomposition, gates, review and delivery.
-- I do not claim 90 % coverage where 71.7–92.2 % was measured.
-- I do not promise a bot without errors. I promise a scoped delivery with
-  acceptance criteria and responsibility for it.
-- A green deploy-run (E2) proves an image was built and pushed, not that the
-  process answers right now.
-
-## Start here
-
-- The full methodology is this document (Russian). Read top to bottom.
-- Templates: [templates/README.md](templates/README.md).
-- Evidence: [evidence/README.md](evidence/README.md).
-- Claims registry: [evidence/claims.yml](evidence/claims.yml).
-
-## Related projects
-
-Nine bots (booking, leadgen, store, support, membership, reminder, docuflow,
-pricesentry, delivery), the shared library `botkit-core`, and
-`botkit-monitoring` (10 services). Test counts and commits:
-[evidence/metrics.json](evidence/metrics.json).
-
-## Citing, license, contact
-
-MIT. Cite by version: see [CITATION.cff](CITATION.cff). Contact:
-[@ninelegsdog](https://t.me/ninelegsdog), [github.com/ninelegsdog](https://github.com/ninelegsdog).
-
-> The full methodology (in Russian) follows below.
 
 ## Почему этот документ существует
 
