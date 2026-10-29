@@ -203,6 +203,7 @@
         "scripts/check-templates.py",
         "scripts/check-version.py",
         "scripts/check-doc-split.py",
+        "scripts/check-markdown.py",
         "scripts/repo-contract.json",
         "evidence/README.md",
         "evidence/metrics.json",
